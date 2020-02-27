@@ -1,0 +1,38 @@
+package testpackage;
+
+import org.hl7.fhir.instance.model.api.IBaseResource;
+import org.hl7.fhir.r4.model.Patient;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+class LocalClientTest {
+    String serverBase = "https://vonk.fire.ly/R4";
+
+    @org.junit.jupiter.api.Test
+    void getResourceById() {
+        LocalClient localClient = new LocalClient(serverBase);
+        String resourceId = "d12f46fa-9c05-480f-8237-fa18b1cad6af";
+        String resourceType = "Patient";
+        IBaseResource resource = localClient.getResourceById(resourceId, resourceType);
+        System.out.println(resource.getClass());
+        String expected = "Dr. Prof. Felix Stefan Meyer";
+        String actual = "";
+        if (resource instanceof Patient) {
+            actual = ((Patient)resource).getNameFirstRep().getNameAsSingleString();
+        }
+        assertEquals(expected, actual);
+    }
+
+    void getPatientsByName() {
+        LocalClient localClient = new LocalClient(serverBase);
+        String patientName = "bob";
+        List<Patient> results = localClient.getPatientsByName(patientName);
+        for (Patient patient : results) {
+            System.out.println(patient.getNameFirstRep().getNameAsSingleString());
+        }
+
+    }
+}
